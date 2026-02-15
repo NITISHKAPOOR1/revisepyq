@@ -223,7 +223,7 @@
         .book-icon { font-size: 70px; margin-bottom: 20px; color: transparent; -webkit-text-stroke: 2px #ccc; transition: all 0.3s ease; }
         .subject:hover .book-icon { transform: scale(1.1); opacity: 0.8; }
         
-        /* Year colors mapping to original subject dataset logic */
+        /* Year colors mapping */
         .subject[data-subject="2025"] { border-top-color: var(--y2025-color); }
         .subject[data-subject="2025"] .book-icon { -webkit-text-stroke-color: var(--y2025-color); }
         .subject[data-subject="2024"] { border-top-color: var(--y2024-color); }
@@ -333,10 +333,16 @@
         <div class="container">
             
             <div id="quiz-view" class="view-section active">
+                
+                <div class="search-container" id="exam-search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="examSearch" class="search-input" placeholder="Search for SI, Constable, Year..." onkeyup="filterExams()">
+                </div>
+
                 <div class="subjects-grid">
                     
                     <div class="subject" data-subject="2025">
-                        <i class="fas fa-calendar-check book-icon"></i>
+                        <i class="fas fa-clipboard-check book-icon"></i>
                         <div class="subject-name">2025</div>
                         <div class="mcq-badge">Latest Papers</div>
                         <div class="topics">
@@ -365,7 +371,7 @@
                     </div>
 
                     <div class="subject" data-subject="2024">
-                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <i class="fas fa-tasks book-icon"></i>
                         <div class="subject-name">2024</div>
                         <div class="mcq-badge">SI & Constable</div>
                         <div class="topics">
@@ -394,7 +400,7 @@
                     </div>
 
                     <div class="subject" data-subject="2023">
-                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <i class="fas fa-file-alt book-icon"></i>
                         <div class="subject-name">2023</div>
                         <div class="mcq-badge">Intelligence Cadre</div>
                         <div class="topics">
@@ -416,7 +422,7 @@
                     </div>
 
                     <div class="subject" data-subject="2022">
-                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <i class="fas fa-edit book-icon"></i>
                         <div class="subject-name">2022</div>
                         <div class="mcq-badge">Technical & Support</div>
                         <div class="topics">
@@ -438,7 +444,7 @@
                     </div>
 
                     <div class="subject" data-subject="2021">
-                        <i class="fas fa-history book-icon"></i>
+                        <i class="fas fa-clipboard-list book-icon"></i>
                         <div class="subject-name">2021</div>
                         <div class="mcq-badge">Archive Papers</div>
                         <div class="topics">
@@ -733,9 +739,31 @@
         document.getElementById('back-to-dashboard').addEventListener('click', function() {
             chaptersView.style.display = 'none';
             switchTab('quiz'); 
+            
+            // Clear exam search box when going back
+            document.getElementById('examSearch').value = '';
+            filterExams();
         });
 
-        // --- SEARCH LOGIC ---
+        // --- EXAM SEARCH LOGIC (NEW) ---
+        function filterExams() {
+            const input = document.getElementById('examSearch');
+            const filter = input.value.toUpperCase();
+            const grid = document.querySelector('#quiz-view .subjects-grid');
+            const cards = grid.getElementsByClassName('subject');
+
+            for (let i = 0; i < cards.length; i++) {
+                // Yeh pooray card (Year + Andar ke hidden topics) ko search karega
+                let text = cards[i].textContent || cards[i].innerText;
+                if (text.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // --- INFO PDF SEARCH LOGIC ---
         function filterPDFs() {
             const input = document.getElementById('pdfSearch');
             const filter = input.value.toUpperCase();
