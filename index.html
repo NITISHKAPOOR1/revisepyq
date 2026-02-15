@@ -3,872 +3,595 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GK Master Portal</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>RevisePYQ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
     <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
-            --primary-text: #2d3436;
-            
-            /* Subject Colors */
-            --history-color: #ff9f43;
-            --geography-color: #2ed573;
-            --polity-color: #2e86de;
-            --economy-color: #9b59b6;
-            --science-color: #ff5252;
-            --current-color: #00d2d3;
-            --telegram-color: #229ED9;
-        }
+        /* Base Styles & Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background-color: #f0f4f8; color: #333333; line-height: 1.6; }
 
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 0;
+        /* --- PROFESSIONAL ED-TECH LOGIN SCREEN (Drishti IAS Style) --- */
+        #login-section {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             min-height: 100vh;
+            padding: 2rem;
+            background-color: #eef2f6; 
         }
 
-        /* --- LOGIN WINDOW STYLES --- */
-        #login-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            z-index: 9999;
+        .login-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            transition: opacity 0.5s;
-        }
-
-        .login-card {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 40px;
-            border-radius: 20px;
+            flex-direction: row;
+            background: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
             width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-        }
-
-        .login-card h2 { margin-bottom: 30px; color: #2d3436; font-size: 2em; }
-        .input-group { margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #636e72; }
-        
-        .login-input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #dfe6e9;
-            border-radius: 10px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
-        }
-        .login-input:focus { outline: none; border-color: #764ba2; }
-
-        .login-btn {
-            width: 100%;
-            padding: 15px;
-            background: #764ba2;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 10px;
-        }
-        .login-btn:hover { background: #5b3a7d; }
-
-        .login-status { margin-top: 15px; color: #e74c3c; font-size: 0.9rem; min-height: 20px; }
-        
-        /* Hide main app initially */
-        #main-app { display: none; }
-
-        /* --- HEADER & NAV --- */
-        header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 40px 20px 80px;
-            text-align: center;
-            color: white;
-            border-bottom-left-radius: 40px;
-            border-bottom-right-radius: 40px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            margin-bottom: 30px;
-            position: relative;
-        }
-
-        /* --- LOGOUT BUTTON --- */
-        #logout-btn {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
-            backdrop-filter: blur(5px);
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            z-index: 100;
-        }
-
-        #logout-btn:hover {
-            background: white;
-            color: #764ba2;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        h1 { margin: 0; font-size: 2.2em; font-weight: 700; }
-        .subtitle { opacity: 0.9; font-size: 1em; margin-top: 5px; font-weight: 400; }
-
-        .nav-tabs {
-            display: flex;
-            justify-content: center;
-            gap: 15px; /* Reduced gap slightly for 3 items */
-            margin-top: -60px;
-            margin-bottom: 40px;
-            position: relative;
-            z-index: 20;
-            flex-wrap: wrap; /* Safety for small screens */
-        }
-
-        .tab-btn {
-            padding: 15px 30px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            background: white;
-            color: #764ba2;
-        }
-
-        .tab-btn.active {
-            background: #ff9f43;
-            color: white;
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(255, 159, 67, 0.4);
-        }
-
-        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
-
-        /* --- SEARCH BAR --- */
-        .search-container { margin-bottom: 30px; position: relative; }
-        .search-input { width: 100%; padding: 18px 25px; padding-left: 55px; border-radius: 15px; border: 2px solid #eee; font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
-        .search-input:focus { border-color: #764ba2; box-shadow: 0 5px 20px rgba(118, 75, 162, 0.15); }
-        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 1.2rem; }
-
-        /* --- PDF GRID --- */
-        .pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 50px; }
-        .pdf-card { background: white; padding: 25px; border-radius: 20px; display: flex; align-items: flex-start; gap: 15px; transition: all 0.3s; border: 1px solid #f0f0f0; cursor: pointer; text-decoration: none; color: inherit; }
-        .pdf-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-color: #ff7675; }
-        .pdf-icon { font-size: 2.5rem; color: #ff7675; }
-        .pdf-info { flex: 1; }
-        .pdf-title { display: block; font-weight: 600; font-size: 1.05rem; margin-bottom: 5px; color: #2d3436; }
-        .pdf-meta { font-size: 0.85rem; color: #b2bec3; display: block; }
-        .download-btn { background: #f1f2f6; color: #2d3436; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-        .pdf-card:hover .download-btn { background: #ff7675; color: white; }
-
-        /* --- TELEGRAM COMMUNITY STYLES --- */
-        .telegram-card {
-            background: white;
-            border-radius: 24px;
-            padding: 40px 20px;
-            text-align: center;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-            border-top: 8px solid var(--telegram-color);
-            position: relative;
+            max-width: 900px;
             overflow: hidden;
         }
 
-        .telegram-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 40px rgba(34, 158, 217, 0.2);
+        /* Left Side: Branding / Info */
+        .login-brand {
+            flex: 1;
+            background: linear-gradient(135deg, #0f2b5b 0%, #1a3c75 100%); /* Deep Navy Blue */
+            color: #ffffff;
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
-        .tele-icon {
-            font-size: 80px;
-            color: var(--telegram-color);
-            margin-bottom: 20px;
-            display: block;
-        }
-
-        .tele-title {
-            font-size: 1.5em;
+        .login-brand h2 {
+            font-size: 2.2rem;
             font-weight: 700;
-            color: #2d3436;
-            margin-bottom: 10px;
+            margin-bottom: 1rem;
+            line-height: 1.2;
         }
 
-        .tele-desc {
-            color: #636e72;
-            font-size: 0.9em;
-            margin-bottom: 25px;
-            line-height: 1.5;
+        .login-brand p {
+            color: #d1e0f2;
+            font-size: 1.05rem;
+            margin-bottom: 2rem;
         }
 
-        .join-btn {
-            background: var(--telegram-color);
-            color: white;
-            text-decoration: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: 600;
+        .brand-features {
+            list-style: none;
+        }
+        
+        .brand-features li {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .brand-features li::before {
+            content: '✓';
             display: inline-block;
-            transition: background 0.3s;
-            box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3);
-        }
-
-        .join-btn:hover {
-            background: #1c8ac0;
-            transform: scale(1.05);
-        }
-
-        /* --- DASHBOARD STYLES --- */
-        .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding-bottom: 50px; }
-        .subject { background: white; padding: 40px 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-top: 6px solid #ddd; }
-        .subject:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .book-icon { font-size: 70px; margin-bottom: 20px; color: transparent; -webkit-text-stroke: 2px #ccc; transition: all 0.3s ease; }
-        .subject:hover .book-icon { transform: scale(1.1); opacity: 0.8; }
-        
-        /* Subject colors */
-        .subject[data-subject="History"] { border-top-color: var(--history-color); }
-        .subject[data-subject="History"] .book-icon { -webkit-text-stroke-color: var(--history-color); }
-        .subject[data-subject="Geography"] { border-top-color: var(--geography-color); }
-        .subject[data-subject="Geography"] .book-icon { -webkit-text-stroke-color: var(--geography-color); }
-        .subject[data-subject="Polity"] { border-top-color: var(--polity-color); }
-        .subject[data-subject="Polity"] .book-icon { -webkit-text-stroke-color: var(--polity-color); }
-        .subject[data-subject="Economy"] { border-top-color: var(--economy-color); }
-        .subject[data-subject="Economy"] .book-icon { -webkit-text-stroke-color: var(--economy-color); }
-        .subject[data-subject="Science"] { border-top-color: var(--science-color); }
-        .subject[data-subject="Science"] .book-icon { -webkit-text-stroke-color: var(--science-color); }
-        .subject[data-subject="Current"] { border-top-color: var(--current-color); }
-        .subject[data-subject="Current"] .book-icon { -webkit-text-stroke-color: var(--current-color); }
-
-        .subject-name { font-size: 1.4em; font-weight: 700; color: var(--primary-text); }
-        .mcq-badge { font-size: 0.8em; color: #636e72; background: #eee; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 10px; }
-        .topics { display: none; }
-
-        /* --- CHAPTERS VIEW --- */
-        .chapters-view { display: none; padding-bottom: 50px; }
-        .subject-header { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 20px; z-index: 100; }
-        #chapters-title { margin: 0; font-size: 1.8em; color: var(--primary-text); font-weight: 700; }
-        .back-button { background: #f1f2f6; color: var(--primary-text); border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
-        .back-button:hover { background: #2d3436; color: white; transform: translateX(-3px); }
-        #chapters-grid { display: flex; flex-direction: column; gap: 15px; }
-        
-        /* STANDARD TOPIC LINK */
-        .topic-link { display: flex; align-items: center; background: white; padding: 25px; border-radius: 18px; text-decoration: none; color: var(--primary-text); transition: all 0.3s; border: 1px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
-        .topic-link:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: rgba(118, 75, 162, 0.2); }
-        
-        .icon-box { width: 50px; height: 50px; background: #f0f3ff; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-right: 20px; font-size: 20px; color: #764ba2; }
-        .topic-link:hover .icon-box { background: #764ba2; color: white; }
-        
-        .topic-name { display: block; font-size: 1.1em; font-weight: 600; margin-bottom: 4px; }
-        .source-text { display: block; font-size: 0.85em; color: #95a5a6; font-style: italic; }
-        
-        /* Right Side Icons */
-        .action-arrow { color: #ccc; font-size: 1.2em; margin-left: auto; transition: all 0.3s; }
-        
-        /* LOCKED CHAPTER STYLING */
-        .topic-link.locked .action-arrow.fa-lock {
-            color: #ff7675; /* Red Lock Icon */
-        }
-        
-        .topic-link.locked { opacity: 0.9; }
-
-        .view-section { display: none; }
-        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* --- TOAST NOTIFICATION STYLES --- */
-        #toast {
-            visibility: hidden;
-            min-width: 280px;
-            background-color: #2d3436;
-            color: #fff;
+            background-color: #ff7a00; /* Saffron/Orange accent */
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
             text-align: center;
-            border-radius: 50px;
-            padding: 16px 25px;
-            position: fixed;
-            z-index: 10000;
-            left: 50%;
-            bottom: 30px;
-            transform: translateX(-50%);
-            font-size: 1rem;
-            font-weight: 500;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            opacity: 0;
-            transition: opacity 0.5s, bottom 0.5s;
+            line-height: 20px;
+            font-size: 0.75rem;
+            margin-right: 12px;
+            font-weight: bold;
         }
 
-        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+        /* Right Side: The Form */
+        .login-form-wrapper {
+            flex: 1;
+            padding: 4rem 3rem;
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-form-wrapper h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #0f2b5b;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Clean Red Notice */
+        .login-notice {
+            color: #d32f2f;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        /* Typewriter Cursor Effect */
+        #typewriter::after {
+            content: "|";
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 
+            50% { opacity: 0; } 
+        }
+
+        /* Form Inputs */
+        .input-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.85rem;
+            color: #666666;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+        }
+
+        .login-form-wrapper input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #cccccc;
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .login-form-wrapper input:focus {
+            outline: none;
+            border-color: #0f2b5b;
+            box-shadow: 0 0 0 2px rgba(15, 43, 91, 0.1);
+        }
+
+        .login-form-wrapper button#login-btn {
+            width: 100%;
+            padding: 12px;
+            margin-top: 1rem;
+            background-color: #0f2b5b;
+            color: #ffffff;
+            border: none;
+            border-radius: 4px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .login-form-wrapper button#login-btn:hover { 
+            background-color: #16366b; 
+        }
+
+        /* Remove Saved Login Button */
+        #remove-saved-btn {
+            display: none;
+            width: 100%;
+            background-color: transparent;
+            color: #d32f2f;
+            border: 1px solid #f5c6cb;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: 0.8rem;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #remove-saved-btn:hover {
+            background-color: #fdecea;
+            color: #b71c1c;
+        }
+
+        #login-error { 
+            color: #d32f2f; 
+            margin-top: 1rem; 
+            font-size: 0.9rem; 
+            display: none; 
+            background: #fdecea;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #f5c6cb;
+        }
+
+        /* --- BOUNDARY BOX TELEGRAM CHANNEL LINK --- */
+        .telegram-blink-link {
+            display: block;
+            text-align: center;
+            margin-top: 2rem;
+            color: #0088cc;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            /* Box Styling */
+            border: 2px solid #0088cc;
+            border-radius: 6px;
+            padding: 12px;
+            background-color: rgba(0, 136, 204, 0.04);
+            /* Animation */
+            animation: blink-anim 2s ease-in-out infinite;
+            transition: all 0.3s;
+        }
+        
+        .telegram-blink-link:hover {
+            color: #ffffff;
+            background-color: #0088cc;
+            animation: none; 
+        }
+
+        @keyframes blink-anim {
+            0%, 100% { opacity: 1; border-color: #0088cc; }
+            50% { opacity: 0.6; border-color: rgba(0, 136, 204, 0.3); }
+        }
+
+        /* Mobile Responsiveness for Login */
+        @media (max-width: 768px) {
+            .login-container { flex-direction: column; }
+            .login-brand { padding: 3rem 2rem; }
+            .login-form-wrapper { padding: 3rem 2rem; }
+        }
+
+        /* --- DASHBOARD/GRID SYSTEM --- */
+        #dashboard-section { display: none; }
+
+        header {
+            background: linear-gradient(135deg, #0f2b5b 0%, #1a3c75 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-bottom: 2rem;
+            border-bottom: 4px solid #ff7a00;
+            position: relative; 
+        }
+        
+        header h1 { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        header p { font-size: 1.1rem; color: #d1e0f2; max-width: 600px; margin: 0 auto; }
+        
+        /* Logout Button Configuration */
+        .logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background-color: transparent;
+            border: 1px solid #ff7a00;
+            color: #ff7a00;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .logout-btn:hover {
+            background-color: #ff7a00;
+            color: #ffffff;
+        }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 2rem 4rem 2rem; }
+
+        /* --- DASHBOARD SEARCH BAR --- */
+        .search-container {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            padding: 0 1rem;
+        }
+        .search-input {
+            width: 100%;
+            max-width: 600px;
+            padding: 14px 24px;
+            border-radius: 50px;
+            border: 1px solid #cccccc;
+            font-size: 1rem;
+            color: #333333;
+            background: #ffffff;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #0f2b5b;
+            box-shadow: 0 4px 12px rgba(15, 43, 91, 0.1);
+        }
+
+        /* --- EXAM GRID AND CARDS --- */
+        .exam-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 2rem; 
+            /* Prevents cards from stretching vertically */
+            align-items: start; 
+            /* Centers cards in their respective columns */
+            justify-items: center; 
+        }
+        
+        .exam-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            /* Tighter padding to hug the content */
+            padding: 1.5rem; 
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+            transition: all 0.3s ease;
+            
+            /* Fits card exactly to its content so it doesn't look overly large */
+            max-width: 320px; 
+            width: 100%;
+            height: fit-content; 
+        }
+
+        .exam-card:hover { 
+            transform: translateY(-4px); 
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.08); 
+            border-color: #0f2b5b; 
+        }
+        
+        .exam-icon { font-size: 7rem; margin-bottom: 1rem; line-height: 1; }
+        .exam-icon img { height: 1em; width: auto; vertical-align: middle; }
+        
+        .exam-title { font-size: 1.25rem; font-weight: 700; color: #333333; margin-bottom: 0.5rem; }
+        .exam-desc { font-size: 0.9rem; color: #666666; }
+
+        .locked-card { opacity: 0.5; filter: grayscale(100%); cursor: not-allowed; }
+        .locked-card:hover { transform: none; box-shadow: 0 2px 4px rgba(0,0,0,0.04); border-color: #e0e0e0; }
+
+        footer { text-align: center; padding: 2rem; color: #666666; font-size: 0.875rem; border-top: 1px solid #e0e0e0; }
     </style>
 </head>
 <body>
 
-    <div id="login-overlay">
-        <div class="login-card">
-            <h2>Welcome Back</h2>
-            <div class="input-group">
-                <label>User ID</label>
-                <input type="text" id="userId" class="login-input" placeholder="Enter User ID">
+    <div id="login-section">
+        <div class="login-container">
+            
+            <div class="login-brand">
+                <h2>RevisePYQ</h2>
+                <p>The most comprehensive and structured platform for previous year question papers.</p>
+                <ul class="brand-features">
+                    <li>Detailed Solutions & Explanations</li>
+                    <li>Organized by Exam & Year</li>
+                    <li>Downloadable & Printable Formats</li>
+                </ul>
             </div>
-            <div class="input-group">
-                <label>Password</label>
-                <input type="password" id="userPass" class="login-input" placeholder="Enter Password">
+
+            <div class="login-form-wrapper">
+                <h3>Student Login</h3>
+                
+                <div class="login-notice">
+                    Hello Dear User,<br>
+                    Welcome to our page<br>
+                    <span id="typewriter"></span>
+                </div>
+                
+                <div class="input-group">
+                    <label for="userid">Registration ID</label>
+                    <input type="text" id="userid" placeholder="Enter your ID" autocomplete="off" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" placeholder="Enter your password" autocomplete="off" required>
+                </div>
+
+                <button onclick="attemptLogin()" id="login-btn">Login to Dashboard</button>
+                
+                <button type="button" id="remove-saved-btn" onclick="removeSavedCredentials()">Remove Saved Credentials</button>
+                
+                <div id="login-error">Invalid credentials. Please try again.</div>
+
+                <a href="https://t.me/your_channel_link_here" target="_blank" class="telegram-blink-link">
+                    ✈️ Join our Telegram Channel for Updates
+                </a>
             </div>
-            <button class="login-btn" onclick="handleLogin()">Login</button>
-            <div id="loginStatus" class="login-status"></div>
-            <p style="font-size: 0.8em; color: #aaa; margin-top: 10px;">Demo: Test / Test</p>
+
         </div>
     </div>
 
-    <div id="main-app">
-        <header id="main-header">
-            <button id="logout-btn" onclick="handleLogout()">
-                <i class="fas fa-sign-out-alt"></i> Logout
-            </button>
-
-            <h1>GK Master Portal</h1>
-            <p class="subtitle">Your ultimate destination for exam preparation</p>
+    <div id="dashboard-section">
+        <header>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+            <h1>Student Dashboard</h1>
+            <p>Access your enrolled Previous Year Questions (PYQs). <br> <span id="user-course-display" style="color: #ff7a00; font-weight:600; font-size: 0.95rem;"></span></p>
         </header>
 
-        <div class="nav-tabs">
-            <button id="btn-quiz" class="tab-btn active" onclick="switchTab('quiz')">Practice Quizzes</button>
-            <button id="btn-info" class="tab-btn" onclick="switchTab('info')">Info Centre</button>
-            <button id="btn-community" class="tab-btn" onclick="switchTab('community')">Community</button>
-        </div>
-
-        <div class="container">
+        <main class="container">
             
-            <div id="quiz-view" class="view-section active">
-                <div class="subjects-grid">
-                    
-                    <div class="subject" data-subject="History">
-                        <i class="fas fa-book book-icon"></i>
-                        <div class="subject-name">History</div>
-                        <div class="mcq-badge">Ancient, Medieval, Modern</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="https://docs.google.com/forms/your-history-link" target="_blank" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Indus Valley</span><span class="source-text">Source: NCERT</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Freedom Struggle</span><span class="source-text">Source: Spectrum</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Mughal Empire</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Gandhian Era</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subject" data-subject="Geography">
-                        <i class="fas fa-globe-asia book-icon"></i>
-                        <div class="subject-name">Geography</div>
-                        <div class="mcq-badge">Indian & World</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">River Systems</span><span class="source-text">Source: Lucent</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Solar System</span><span class="source-text">Source: GC Leong</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Climate of India</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">National Parks</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subject" data-subject="Polity">
-                        <i class="fas fa-landmark book-icon"></i>
-                        <div class="subject-name">Polity</div>
-                        <div class="mcq-badge">Constitution</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="https://forms.gle/ESDmqvN2h1oaPH2A7" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Preamble</span><span class="source-text">Source: Laxmikanth</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Fundamental Rights</span><span class="source-text">Source: Constitution</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">President & VP</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Parliament</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subject" data-subject="Economy">
-                        <i class="fas fa-chart-line book-icon"></i>
-                        <div class="subject-name">Economy</div>
-                        <div class="mcq-badge">Budget</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Budget 2026</span><span class="source-text">Source: PIB</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Banking Awareness</span><span class="source-text">Source: RBI Site</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Inflation Rates</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">NITI Aayog</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subject" data-subject="Science">
-                        <i class="fas fa-atom book-icon"></i>
-                        <div class="subject-name">Science</div>
-                        <div class="mcq-badge">PCB</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Vitamins & Diseases</span><span class="source-text">Source: NCERT</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Human Eye</span><span class="source-text">Source: Class 10 Physics</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Acids & Bases</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Periodic Table</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="subject" data-subject="Current">
-                        <i class="fas fa-newspaper book-icon"></i>
-                        <div class="subject-name">Current Affairs</div>
-                        <div class="mcq-badge">Daily Updates</div>
-                        <div class="topics">
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Awards 2026</span><span class="source-text">Source: The Hindu</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Sports News</span><span class="source-text">Source: ESPN</span></div>
-                                    <i class="fas fa-chevron-right action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Global Summits</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                            <div class="topic-item">
-                                <a href="#" class="topic-link locked">
-                                    <div class="icon-box"><i class="fas fa-clipboard-list"></i></div>
-                                    <div><span class="topic-name">Books & Authors</span><span class="source-text">Coming Soon</span></div>
-                                    <i class="fas fa-lock action-arrow"></i>
-                                </a>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+            <div class="search-container">
+                <input type="text" id="course-search" class="search-input" onkeyup="filterCourses()" placeholder="🔍 Search for exams (e.g., UPSC, Punjab Police...)">
             </div>
 
-            <div id="info-view" class="view-section">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" id="pdfSearch" class="search-input" placeholder="Search for Syllabus, Notifications, Notes..." onkeyup="filterPDFs()">
-                </div>
+            <div class="exam-grid">
                 
-                <div class="pdf-grid" id="pdfGrid">
-                    <a href="syllabus_2026.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-file-pdf pdf-icon"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">UPSC Official Syllabus 2026</span>
-                            <span class="pdf-meta">Updated: Jan 2026 • 2.5 MB</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                    <a href="ssc_notification.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-bell pdf-icon" style="color: #ff9f43;"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">SSC CGL 2026 Notification</span>
-                            <span class="pdf-meta">Updated: Feb 2026 • 1.8 MB</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                    <a href="ca_jan_2026.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-file-alt pdf-icon" style="color: #00d2d3;"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">Current Affairs Jan 2026</span>
-                            <span class="pdf-meta">Monthly Capsule • 5 MB</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                    <a href="ncert_summary.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-book pdf-icon" style="color: #2ed573;"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">NCERT History Summary</span>
-                            <span class="pdf-meta">Class 6-12 Notes • 8 MB</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                    <a href="admit_card_railway.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-id-card pdf-icon" style="color: #9b59b6;"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">Railway Group D Admit Card</span>
-                            <span class="pdf-meta">Hall Ticket • Direct Link</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                    <a href="neet_answer_key.pdf" target="_blank" class="pdf-card">
-                        <i class="fas fa-check-circle pdf-icon" style="color: #e84393;"></i>
-                        <div class="pdf-info">
-                            <span class="pdf-title">NEET 2026 Answer Key</span>
-                            <span class="pdf-meta">Official Release • Set A, B, C</span>
-                        </div>
-                        <div class="download-btn"><i class="fas fa-arrow-down"></i></div>
-                    </a>
-                </div>
-            </div>
-
-            <div id="community-view" class="view-section">
-                <div class="subjects-grid">
-                    <div class="telegram-card">
-                        <i class="fab fa-telegram-plane tele-icon"></i>
-                        <div class="tele-title">Official Channel</div>
-                        <p class="tele-desc">Join our official channel for daily updates, poll quizzes, and important notifications.</p>
-                        <a href="https://t.me/Punjabprep" target="_blank" class="join-btn">
-                            <i class="fas fa-plus"></i> Join Now
-                        </a>
+                <a href="upsc.html" class="exam-card" data-course="UPSC CSE">
+                    <div class="exam-icon">
+                        <img src="upsc.jpg" alt="UPSC Official Logo">
                     </div>
+                    <h2 class="exam-title">UPSC CSE</h2>
+                    <p class="exam-desc">Civil Services Prelims & Mains past papers with detailed solutions.</p>
+                </a>
 
-                    <div class="telegram-card">
-                        <i class="fab fa-telegram tele-icon"></i>
-                        <div class="tele-title">ADMIN</div>
-                        <p class="tele-desc">Connect with Admin for Proper Help.</p>
-                        <a href="https://t.me/kapoornitish" target="_blank" class="join-btn">
-                            <i class="fas fa-comments"></i> Connect Admin
-                        </a>
+                <a href="pcs.html" class="exam-card" data-course="State PCS">
+                    <div class="exam-icon">
+                        <img src="pcs.jpg" alt="State Emblem Logo">
                     </div>
-                </div>
-            </div>
+                    <h2 class="exam-title">State PCS</h2>
+                    <p class="exam-desc">Punjab PCS and other state civil services past papers (GS, CSAT, & Mains).</p>
+                </a>
 
-            <div id="chapters-view" class="chapters-view">
-                <div class="subject-header">
-                    <button id="back-to-dashboard" class="back-button">
-                        <i class="fas fa-arrow-left"></i> Back
-                    </button>
-                    <h2 id="chapters-title">Subject Name</h2>
-                    <div style="width: 80px;"></div>
-                </div>
-                <div id="chapters-grid"></div>
-            </div>
+                <a href="punjab-police-pyq.html" class="exam-card" data-course="Punjab Police">
+                    <div class="exam-icon">
+                        <img src="pp.jpg" alt="Punjab Police Official Logo">
+                    </div>
+                    <h2 class="exam-title">Punjab Police</h2>
+                    <p class="exam-desc">Constable and SI previous year papers covering GS, Math, Reasoning, and Punjabi.</p>
+                </a>
 
+                <a href="ssc-pyq.html" class="exam-card" data-course="SSC CGL">
+                    <div class="exam-icon">
+                        <img src="ssc.jpg" alt="SSC Official Logo">
+                    </div>
+                    <h2 class="exam-title">SSC CGL</h2>
+                    <p class="exam-desc">Staff Selection Commission Tier 1 and Tier 2 previous year questions.</p>
+                </a>
+
+                <a href="jee-pyq.html" class="exam-card" data-course="JEE Main & Adv">
+                    <div class="exam-icon">
+                        <img src="nda.jpg" alt="NTA Official Logo">
+                    </div>
+                    <h2 class="exam-title">JEE Main & Adv</h2>
+                    <p class="exam-desc">Engineering entrance past papers categorized by physics, math, and chemistry.</p>
+                </a>
+
+            </div>
+        </main>
+        <footer><p>&copy; 2026 RevisePYQ. Built for student success.</p></footer>
     </div>
 
-    <div id="toast"></div>
-
     <script>
-        // --- VARIABLES ---
-        const quizView = document.getElementById('quiz-view');
-        const infoView = document.getElementById('info-view');
-        const communityView = document.getElementById('community-view');
-        const chaptersView = document.getElementById('chapters-view');
-        const header = document.getElementById('main-header');
-        const navTabs = document.querySelector('.nav-tabs');
-        
-        const btnQuiz = document.getElementById('btn-quiz');
-        const btnInfo = document.getElementById('btn-info');
-        const btnCommunity = document.getElementById('btn-community');
-        
-        const subjects = document.querySelectorAll('.subject');
-        
-        // --- LOGIN LOGIC ---
-        const loginOverlay = document.getElementById('login-overlay');
-        const mainApp = document.getElementById('main-app');
-        const loginStatus = document.getElementById('loginStatus');
-        let currentUserType = null; // 'Test' or 'Real'
+        // REPLACE THIS URL with your actual Google Apps Script Web App URL
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyo1RX-ncibyrbUmGB02BMmMM-UMRcJWWnx0l-lnIkPhgN2OXQ0H0CNbUs2rPeYzc20/exec"; 
 
-        // **********************************************************
-        // PASTE YOUR DEPLOYED GOOGLE SCRIPT WEB APP URL HERE
-        // **********************************************************
-        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwI49SRcfHbJv2h5Q0eKxf33xiZ4bkEmtWizytqfMv9DIeVPAVgYbUzWviNsiS_65DMsw/exec'; 
-
-        function handleLogin() {
-            const id = document.getElementById('userId').value.trim();
-            const pass = document.getElementById('userPass').value.trim();
-            loginStatus.textContent = "Verifying...";
-            loginStatus.style.color = "blue";
-
-            // 1. Check Test User (Demo Mode)
-            if(id === "Test" && pass === "Test") {
-                loginSuccess('Test');
-                return;
+        // Typewriting effect function for the test login text
+        const typeText = "login with Id- Test, Password- Test to Attempt Test";
+        let typeIndex = 0;
+        function typeEffect() {
+            if (typeIndex < typeText.length) {
+                document.getElementById("typewriter").innerHTML += typeText.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeEffect, 50); // Speed set to 50ms for smooth typing
             }
-
-            // 2. Check Real User (Google Sheet)
-            if (GOOGLE_SCRIPT_URL.includes("YOUR_SCRIPT_ID")) {
-                loginStatus.textContent = "Script URL missing. Use Test/Test.";
-                loginStatus.style.color = "red";
-                return;
-            }
-
-            fetch(`${GOOGLE_SCRIPT_URL}?id=${id}&pass=${pass}`)
-                .then(response => response.text())
-                .then(data => {
-                    if(data.trim() === "TRUE") {
-                        loginSuccess('Real');
-                    } else {
-                        loginStatus.textContent = "Invalid ID or Password";
-                        loginStatus.style.color = "red";
-                    }
-                })
-                .catch(error => {
-                    loginStatus.textContent = "Connection Error";
-                    console.error(error);
-                });
         }
 
-        function loginSuccess(type) {
-            currentUserType = type;
-            loginOverlay.style.opacity = '0';
-            setTimeout(() => {
-                loginOverlay.style.display = 'none';
-                mainApp.style.display = 'block';
-            }, 500);
-        }
+        // Auto-fill credentials on load
+        window.onload = function() {
+            typeEffect(); // Start the typing animation
 
-        function handleLogout() {
-            document.getElementById('main-app').style.display = 'none';
-            document.getElementById('login-overlay').style.display = 'flex';
-            document.getElementById('login-overlay').style.opacity = '1';
-            document.getElementById('userId').value = '';
-            document.getElementById('userPass').value = '';
-            document.getElementById('loginStatus').textContent = '';
-            currentUserType = null;
+            const savedId = localStorage.getItem("pyq_userid");
+            const savedPass = localStorage.getItem("pyq_password");
             
-            switchTab('quiz');
-            document.getElementById('chapters-view').style.display = 'none';
-            document.querySelector('.nav-tabs').style.display = 'flex';
-            document.getElementById('main-header').style.display = 'block';
+            if(savedId && savedPass) {
+                document.getElementById('userid').value = savedId;
+                document.getElementById('password').value = savedPass;
+                // Show the remove credentials button since data is present
+                document.getElementById('remove-saved-btn').style.display = 'block';
+            }
+        };
+
+        // Function to clear credentials from the memory and input fields
+        function removeSavedCredentials() {
+            localStorage.removeItem("pyq_userid");
+            localStorage.removeItem("pyq_password");
+            document.getElementById('userid').value = '';
+            document.getElementById('password').value = '';
+            document.getElementById('remove-saved-btn').style.display = 'none';
         }
 
-        // --- NAVIGATION LOGIC ---
-        function switchTab(tabName) {
-            // Hide all main views
-            quizView.classList.remove('active');
-            infoView.classList.remove('active');
-            communityView.classList.remove('active');
-            chaptersView.style.display = 'none'; // Hide inner chapter view
+        async function attemptLogin() {
+            const idInput = document.getElementById('userid').value;
+            const passInput = document.getElementById('password').value;
+            const btn = document.getElementById('login-btn');
+            const errorMsg = document.getElementById('login-error');
 
-            // Reset buttons
-            btnQuiz.classList.remove('active');
-            btnInfo.classList.remove('active');
-            btnCommunity.classList.remove('active');
+            if(!idInput || !passInput) {
+                errorMsg.innerText = "Please fill in both fields.";
+                errorMsg.style.display = 'block';
+                return;
+            }
 
-            // Restore header elements if coming back from chapter view
-            header.style.display = 'block';
-            navTabs.style.display = 'flex';
+            btn.innerText = "Verifying...";
+            errorMsg.style.display = 'none';
 
-            if(tabName === 'quiz') {
-                quizView.classList.add('active');
-                btnQuiz.classList.add('active');
-            } else if (tabName === 'info') {
-                infoView.classList.add('active');
-                btnInfo.classList.add('active');
-            } else if (tabName === 'community') {
-                communityView.classList.add('active');
-                btnCommunity.classList.add('active');
+            try {
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ id: idInput, password: passInput })
+                });
+                
+                const result = await response.json();
+
+                if(result.success) {
+                    // SAVE CREDENTIALS ON SUCCESSFUL LOGIN
+                    localStorage.setItem("pyq_userid", idInput);
+                    localStorage.setItem("pyq_password", passInput);
+                    
+                    // Show the remove button so user knows they are saved
+                    document.getElementById('remove-saved-btn').style.display = 'block';
+
+                    document.getElementById('login-section').style.display = 'none';
+                    document.getElementById('dashboard-section').style.display = 'block';
+                    
+                    // Set the enrolled text strictly to what Google Sheets returns
+                    document.getElementById('user-course-display').innerText = "Enrolled: " + result.course;
+                    
+                    setupGrid(result.course);
+                    
+                    // Reset button text back in case they log out
+                    btn.innerText = "Login to Dashboard"; 
+                } else {
+                    // Leave memory alone on failed attempt so user can fix a typo
+                    errorMsg.innerText = result.message || "Invalid ID or Password";
+                    errorMsg.style.display = 'block';
+                    btn.innerText = "Login to Dashboard";
+                }
+            } catch (error) {
+                errorMsg.innerText = "Connection error. Please check the Web App URL.";
+                errorMsg.style.display = 'block';
+                btn.innerText = "Login to Dashboard";
             }
         }
 
-        subjects.forEach(subject => {
-            subject.addEventListener('click', function() {
-                const subjectName = this.querySelector('.subject-name').textContent;
-                const topics = this.querySelector('.topics').innerHTML;
+        // Setup the restrictions on cards based strictly on Google Sheet data
+        function setupGrid(userCoursesString) {
+            const cards = document.querySelectorAll('.exam-card');
+            const enrolledCourses = userCoursesString.split(',').map(course => course.trim());
+            
+            cards.forEach(card => {
+                const cardCourse = card.getAttribute('data-course');
                 
-                document.getElementById('chapters-title').textContent = subjectName;
-                document.getElementById('chapters-grid').innerHTML = topics;
-                
-                // Hide main views
-                quizView.classList.remove('active');
-                infoView.classList.remove('active');
-                communityView.classList.remove('active');
-                
-                // Hide Nav Tabs
-                navTabs.style.display = 'none'; 
-                
-                // Show Chapter View
-                chaptersView.style.display = 'block';
-                window.scrollTo(0, 0);
+                // If the user's string from Google Sheet doesn't include the card's course, lock it.
+                if(!enrolledCourses.includes(cardCourse)) {
+                    card.classList.add('locked-card');
+                    
+                    card.addEventListener('click', function(e) {
+                        e.preventDefault(); 
+                        alert("You are not subscribed to this course. Please contact administration for access.");
+                    });
+                }
             });
-        });
-
-        document.getElementById('back-to-dashboard').addEventListener('click', function() {
-            chaptersView.style.display = 'none';
-            // Return to dashboard state
-            switchTab('quiz'); 
-        });
-
-        // --- SEARCH LOGIC ---
-        function filterPDFs() {
-            const input = document.getElementById('pdfSearch');
-            const filter = input.value.toUpperCase();
-            const grid = document.getElementById('pdfGrid');
-            const cards = grid.getElementsByClassName('pdf-card');
-
-            for (let i = 0; i < cards.length; i++) {
-                let title = cards[i].querySelector(".pdf-title");
-                let txtValue = title.textContent || title.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    cards[i].style.display = "";
-                } else {
-                    cards[i].style.display = "none";
-                }
-            }
         }
 
-        // --- TOAST LOGIC ---
-        function showToast(message) {
-            var x = document.getElementById("toast");
-            x.textContent = message;
-            x.className = "show";
-            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        // Search/Filter function for the dashboard grid
+        function filterCourses() {
+            let input = document.getElementById('course-search').value.toLowerCase();
+            let cards = document.querySelectorAll('.exam-card');
+            
+            cards.forEach(card => {
+                let title = card.querySelector('.exam-title').innerText.toLowerCase();
+                let desc = card.querySelector('.exam-desc').innerText.toLowerCase();
+                
+                // If title or description matches the search text, show it. Otherwise, hide it.
+                if (title.includes(input) || desc.includes(input)) {
+                    card.style.display = "flex"; // Re-applies flexbox inside the grid
+                } else {
+                    card.style.display = "none";
+                }
+            });
         }
 
-        // --- CLICK INTERCEPTION ---
-        document.getElementById('chapters-grid').addEventListener('click', function(e) {
-            const link = e.target.closest('.topic-link');
-            if (link) {
-                e.preventDefault(); 
-
-                // 1. Handle Locked Chapters
-                if(link.classList.contains('locked')) {
-                    if(currentUserType === 'Test') {
-                        showToast("Please Subscribe to Unlock 💎");
-                    } else {
-                        showToast("Quiz Will Upload soon 🚀");
-                    }
-                    return;
-                }
-
-                // 2. Handle Unlocked Chapters
-                const href = link.getAttribute('href');
-                if (!href || href === '#' || href === '' || href.trim() === '') {
-                    showToast("Quiz Will Upload soon 🚀"); 
-                } else {
-                    window.open(href, '_blank');
-                }
-            }
-        });
+        // LOGOUT FUNCTION: ONLY returns to login window. DOES NOT wipe credentials.
+        function logout() {
+            window.location.reload();
+        }
     </script>
 </body>
 </html>
