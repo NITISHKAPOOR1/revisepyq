@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Punjab Police Exam Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Punjab Police Official Theme Colors */
+            --bg-gradient: linear-gradient(135deg, #002855 0%, #001122 100%); /* Deep Navy Blue */
+            --primary-text: #2d3436;
+            
+            /* Year Colors - Red, Blue, Khaki variants */
+            --y2025-color: #C8102E; /* Official Red */
+            --y2024-color: #d4af37; /* Khaki / Gold */
+            --y2023-color: #00509E; /* Police Blue */
+            --y2022-color: #8B0000; /* Dark Red */
+            --y2021-color: #B8860B; /* Dark Khaki */
+            
+            --telegram-color: #229ED9;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* --- LOGIN WINDOW STYLES --- */
+        #login-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-gradient);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            border-top: 5px solid #C8102E; /* Red accent on login card */
+        }
+
+        /* --- RED NOTICE WITH TYPEWRITER EFFECT --- */
+        .notice-container {
+            color: red;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        .notice-container div { font-size: 1.1em; font-weight: 500;}
+        
+        #typewriter {
+            font-weight: bold;
+            margin-top: 5px;
+            font-size: 0.95rem;
+            min-height: 20px;
+            color: #d32f2f;
+        }
+        #typewriter::after {
+            content: "|";
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .login-card h2 { margin-bottom: 30px; color: #002855; font-size: 2em; }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; font-weight: 600; color: #636e72; }
+        
+        .login-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        .login-input:focus { outline: none; border-color: #002855; }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: #002855;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .login-btn:hover { background: #001122; }
+
+        /* Remove Credentials Button */
+        .remove-btn {
+            background: transparent;
+            color: #e74c3c;
+            border: 2px solid #e74c3c;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            display: none;
+        }
+        .remove-btn:hover { background: #e74c3c; color: white; }
+
+        .login-status { margin-top: 15px; color: #e74c3c; font-size: 0.9rem; min-height: 20px; font-weight: 500; }
+        
+        #main-app { display: none; }
+
+        /* --- HEADER & NAV --- */
+        header {
+            background: var(--bg-gradient);
+            padding: 40px 20px 80px;
+            text-align: center;
+            color: white;
+            border-bottom-left-radius: 40px;
+            border-bottom-right-radius: 40px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            position: relative;
+            border-bottom: 4px solid #C8102E; /* Punjab Police Red Strip */
+        }
+
+        /* --- LOGOUT BUTTON --- */
+        #logout-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            backdrop-filter: blur(5px);
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 100;
+        }
+        #logout-btn:hover { background: white; color: #002855; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+
+        h1 { margin: 0; font-size: 2.2em; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .subtitle { opacity: 0.9; font-size: 1em; margin-top: 5px; font-weight: 400; color: #d4af37; }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 15px; 
+            margin-top: -60px;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 20;
+            flex-wrap: wrap; 
+        }
+
+        .tab-btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            background: white;
+            color: #002855;
+        }
+        .tab-btn.active { background: #C8102E; color: white; transform: translateY(-3px); box-shadow: 0 10px 20px rgba(200, 16, 46, 0.4); }
+
+        .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+
+        /* --- SEARCH BAR --- */
+        .search-container { margin-bottom: 30px; position: relative; }
+        .search-input { width: 100%; padding: 18px 25px; padding-left: 55px; border-radius: 15px; border: 2px solid #eee; font-size: 1rem; outline: none; transition: all 0.3s; box-sizing: border-box; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .search-input:focus { border-color: #002855; box-shadow: 0 5px 20px rgba(0, 40, 85, 0.15); }
+        .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #aaa; font-size: 1.2rem; }
+
+        /* --- PDF GRID --- */
+        .pdf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding-bottom: 50px; }
+        .pdf-card { background: white; padding: 25px; border-radius: 20px; display: flex; align-items: flex-start; gap: 15px; transition: all 0.3s; border: 1px solid #f0f0f0; cursor: pointer; text-decoration: none; color: inherit; }
+        .pdf-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.08); border-color: #C8102E; }
+        .pdf-icon { font-size: 2.5rem; color: #C8102E; }
+        .pdf-info { flex: 1; }
+        .pdf-title { display: block; font-weight: 600; font-size: 1.05rem; margin-bottom: 5px; color: #002855; }
+        .pdf-meta { font-size: 0.85rem; color: #b2bec3; display: block; }
+        .share-btn { background: #f1f2f6; color: #2d3436; border: none; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
+        .pdf-card:hover .share-btn { background: #C8102E; color: white; }
+
+        /* --- TELEGRAM COMMUNITY STYLES --- */
+        .telegram-card { background: white; border-radius: 24px; padding: 40px 20px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.05); transition: all 0.3s ease; border-top: 8px solid var(--telegram-color); position: relative; overflow: hidden; }
+        .telegram-card:hover { transform: translateY(-10px); box-shadow: 0 20px 40px rgba(34, 158, 217, 0.2); }
+        .tele-icon { font-size: 80px; color: var(--telegram-color); margin-bottom: 20px; display: block; }
+        .tele-title { font-size: 1.5em; font-weight: 700; color: #2d3436; margin-bottom: 10px; }
+        .tele-desc { color: #636e72; font-size: 0.9em; margin-bottom: 25px; line-height: 1.5; }
+        .join-btn { background: var(--telegram-color); color: white; text-decoration: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; display: inline-block; transition: background 0.3s; box-shadow: 0 5px 15px rgba(34, 158, 217, 0.3); }
+        .join-btn:hover { background: #1c8ac0; transform: scale(1.05); }
+
+        /* --- DASHBOARD STYLES (YEAR WISE) --- */
+        .subjects-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; padding-bottom: 50px; }
+        .subject { background: white; padding: 40px 20px; border-radius: 24px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1); position: relative; box-shadow: 0 10px 20px rgba(0,0,0,0.05); border-top: 6px solid #ddd; }
+        .subject:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .book-icon { font-size: 70px; margin-bottom: 20px; color: transparent; -webkit-text-stroke: 2px #ccc; transition: all 0.3s ease; }
+        .subject:hover .book-icon { transform: scale(1.1); opacity: 0.8; }
+        
+        /* Year colors mapping to original subject dataset logic */
+        .subject[data-subject="2025"] { border-top-color: var(--y2025-color); }
+        .subject[data-subject="2025"] .book-icon { -webkit-text-stroke-color: var(--y2025-color); }
+        .subject[data-subject="2024"] { border-top-color: var(--y2024-color); }
+        .subject[data-subject="2024"] .book-icon { -webkit-text-stroke-color: var(--y2024-color); }
+        .subject[data-subject="2023"] { border-top-color: var(--y2023-color); }
+        .subject[data-subject="2023"] .book-icon { -webkit-text-stroke-color: var(--y2023-color); }
+        .subject[data-subject="2022"] { border-top-color: var(--y2022-color); }
+        .subject[data-subject="2022"] .book-icon { -webkit-text-stroke-color: var(--y2022-color); }
+        .subject[data-subject="2021"] { border-top-color: var(--y2021-color); }
+        .subject[data-subject="2021"] .book-icon { -webkit-text-stroke-color: var(--y2021-color); }
+
+        .subject-name { font-size: 1.8em; font-weight: 700; color: #002855; }
+        .mcq-badge { font-size: 0.85em; color: #002855; background: #e8ecf1; padding: 6px 14px; border-radius: 20px; display: inline-block; margin-top: 10px; font-weight: 600; }
+        .topics { display: none; }
+
+        /* --- CHAPTERS VIEW --- */
+        .chapters-view { display: none; padding-bottom: 50px; }
+        .subject-header { display: flex; align-items: center; justify-content: space-between; background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); padding: 20px 30px; border-radius: 20px; margin-bottom: 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); position: sticky; top: 20px; z-index: 100; border-left: 5px solid #002855; }
+        #chapters-title { margin: 0; font-size: 1.8em; color: #002855; font-weight: 700; }
+        .back-button { background: #f1f2f6; color: #002855; border: none; padding: 10px 20px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 8px; }
+        .back-button:hover { background: #002855; color: white; transform: translateX(-3px); }
+        #chapters-grid { display: flex; flex-direction: column; gap: 15px; }
+        
+        /* STANDARD TOPIC LINK */
+        .topic-link { display: flex; align-items: center; background: white; padding: 25px; border-radius: 18px; text-decoration: none; color: var(--primary-text); transition: all 0.3s; border: 1px solid transparent; box-shadow: 0 4px 6px rgba(0,0,0,0.02); position: relative; overflow: hidden; }
+        .topic-link:hover { transform: translateY(-3px) scale(1.01); box-shadow: 0 10px 20px rgba(0,0,0,0.08); border-color: rgba(0, 40, 85, 0.2); }
+        .icon-box { width: 50px; height: 50px; background: #e8ecf1; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-right: 20px; font-size: 20px; color: #002855; transition: all 0.3s;}
+        .topic-link:hover .icon-box { background: #002855; color: white; }
+        .topic-name { display: block; font-size: 1.1em; font-weight: 600; margin-bottom: 4px; color: #002855; }
+        .source-text { display: block; font-size: 0.85em; color: #95a5a6; font-style: italic; }
+        
+        .action-arrow { color: #ccc; font-size: 1.2em; margin-left: auto; transition: all 0.3s; }
+        .topic-link.locked .action-arrow.fa-lock { color: #C8102E; }
+        .topic-link.locked { opacity: 0.9; }
+
+        .view-section { display: none; }
+        .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- TOAST NOTIFICATION STYLES --- */
+        #toast {
+            visibility: hidden;
+            min-width: 280px;
+            background-color: #002855;
+            color: #fff;
+            text-align: center;
+            border-radius: 50px;
+            padding: 16px 25px;
+            position: fixed;
+            z-index: 10000;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            font-size: 1rem;
+            font-weight: 500;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            opacity: 0;
+            transition: opacity 0.5s, bottom 0.5s;
+            border: 2px solid #C8102E;
+        }
+        #toast.show { visibility: visible; opacity: 1; bottom: 50px; }
+    </style>
+</head>
+<body>
+
+    <div id="login-overlay">
+        <div class="login-card">
+            
+            <div class="notice-container">
+                <div>Hello Dear User</div>
+                <div>Welcome to our page</div>
+                <div id="typewriter"></div>
+            </div>
+
+            <h2>Welcome Back</h2>
+            <div class="input-group">
+                <label>User ID</label>
+                <input type="text" id="userId" class="login-input" placeholder="Enter User ID" autocomplete="off">
+            </div>
+            <div class="input-group">
+                <label>Password</label>
+                <input type="password" id="userPass" class="login-input" placeholder="Enter Password" autocomplete="off">
+            </div>
+            <button class="login-btn" onclick="handleLogin()">Login</button>
+            <button class="login-btn remove-btn" id="removeCredentialsBtn" onclick="removeCredentialsBtn()">Remove Login Credentials</button>
+            
+            <div id="loginStatus" class="login-status"></div>
+        </div>
+    </div>
+
+    <div id="main-app">
+        <header id="main-header">
+            <button id="logout-btn" onclick="handleLogout()">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+
+            <h1>Punjab Police Portal</h1>
+            <p class="subtitle">Previous Year Questions & Exam Preparation</p>
+        </header>
+
+        <div class="nav-tabs">
+            <button id="btn-quiz" class="tab-btn active" onclick="switchTab('quiz')">Previous Papers</button>
+            <button id="btn-info" class="tab-btn" onclick="switchTab('info')">Info Centre</button>
+            <button id="btn-community" class="tab-btn" onclick="switchTab('community')">Community</button>
+        </div>
+
+        <div class="container">
+            
+            <div id="quiz-view" class="view-section active">
+                <div class="subjects-grid">
+                    
+                    <div class="subject" data-subject="2025">
+                        <i class="fas fa-calendar-check book-icon"></i>
+                        <div class="subject-name">2025</div>
+                        <div class="mcq-badge">Latest Papers</div>
+                        <div class="topics">
+                            <div class="topic-item">
+                                <a href="https://docs.google.com/forms/your-form-link" target="_blank" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-alt"></i></div>
+                                    <div><span class="topic-name">Sub-Inspector Paper 1</span><span class="source-text">Morning Shift</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-alt"></i></div>
+                                    <div><span class="topic-name">Sub-Inspector Paper 2</span><span class="source-text">Evening Shift</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link locked">
+                                    <div class="icon-box"><i class="fas fa-file-alt"></i></div>
+                                    <div><span class="topic-name">Constable Exam</span><span class="source-text">Coming Soon</span></div>
+                                    <i class="fas fa-lock action-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject" data-subject="2024">
+                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <div class="subject-name">2024</div>
+                        <div class="mcq-badge">SI & Constable</div>
+                        <div class="topics">
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-signature"></i></div>
+                                    <div><span class="topic-name">Constable Paper (Shift 1)</span><span class="source-text">August 2024</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-signature"></i></div>
+                                    <div><span class="topic-name">Constable Paper (Shift 2)</span><span class="source-text">August 2024</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link locked">
+                                    <div class="icon-box"><i class="fas fa-file-signature"></i></div>
+                                    <div><span class="topic-name">Head Constable</span><span class="source-text">Coming Soon</span></div>
+                                    <i class="fas fa-lock action-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject" data-subject="2023">
+                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <div class="subject-name">2023</div>
+                        <div class="mcq-badge">Intelligence Cadre</div>
+                        <div class="topics">
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-search"></i></div>
+                                    <div><span class="topic-name">Intelligence Assistant</span><span class="source-text">Official Paper</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-shield-alt"></i></div>
+                                    <div><span class="topic-name">Investigation Cadre</span><span class="source-text">Official Paper</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject" data-subject="2022">
+                        <i class="fas fa-calendar-alt book-icon"></i>
+                        <div class="subject-name">2022</div>
+                        <div class="mcq-badge">Technical & Support</div>
+                        <div class="topics">
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
+                                    <div><span class="topic-name">TSS Cadre SI</span><span class="source-text">Paper 1</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link locked">
+                                    <div class="icon-box"><i class="fas fa-laptop-code"></i></div>
+                                    <div><span class="topic-name">TSS Cadre Constable</span><span class="source-text">Coming Soon</span></div>
+                                    <i class="fas fa-lock action-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="subject" data-subject="2021">
+                        <i class="fas fa-history book-icon"></i>
+                        <div class="subject-name">2021</div>
+                        <div class="mcq-badge">Archive Papers</div>
+                        <div class="topics">
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-archive"></i></div>
+                                    <div><span class="topic-name">Sub-Inspector Exam</span><span class="source-text">2021 Base Paper</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link">
+                                    <div class="icon-box"><i class="fas fa-file-archive"></i></div>
+                                    <div><span class="topic-name">Constable Exam</span><span class="source-text">2021 Base Paper</span></div>
+                                    <i class="fas fa-chevron-right action-arrow"></i>
+                                </a>
+                            </div>
+                            <div class="topic-item">
+                                <a href="#" class="topic-link locked">
+                                    <div class="icon-box"><i class="fas fa-file-archive"></i></div>
+                                    <div><span class="topic-name">Jail Warder</span><span class="source-text">Coming Soon</span></div>
+                                    <i class="fas fa-lock action-arrow"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div id="info-view" class="view-section">
+                <div class="search-container">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" id="pdfSearch" class="search-input" placeholder="Search for Syllabus, Notifications, Notes..." onkeyup="filterPDFs()">
+                </div>
+                
+                <div class="pdf-grid" id="pdfGrid">
+                    <a href="syllabus_si.pdf" target="_blank" class="pdf-card">
+                        <i class="fas fa-file-pdf pdf-icon"></i>
+                        <div class="pdf-info">
+                            <span class="pdf-title">Punjab Police SI Syllabus</span>
+                            <span class="pdf-meta">Updated: 2026 • 2.5 MB</span>
+                        </div>
+                        <div class="share-btn"><i class="fas fa-share-alt"></i></div>
+                    </a>
+                    <a href="constable_notification.pdf" target="_blank" class="pdf-card">
+                        <i class="fas fa-bell pdf-icon" style="color: #d4af37;"></i>
+                        <div class="pdf-info">
+                            <span class="pdf-title">Constable Notification 2026</span>
+                            <span class="pdf-meta">Official Release • 1.8 MB</span>
+                        </div>
+                        <div class="share-btn"><i class="fas fa-share-alt"></i></div>
+                    </a>
+                    <a href="punjab_gk.pdf" target="_blank" class="pdf-card">
+                        <i class="fas fa-map-marked-alt pdf-icon" style="color: #00509E;"></i>
+                        <div class="pdf-info">
+                            <span class="pdf-title">Punjab GK Special Notes</span>
+                            <span class="pdf-meta">History & Culture • 5 MB</span>
+                        </div>
+                        <div class="share-btn"><i class="fas fa-share-alt"></i></div>
+                    </a>
+                    <a href="physical_test.pdf" target="_blank" class="pdf-card">
+                        <i class="fas fa-running pdf-icon" style="color: #2ed573;"></i>
+                        <div class="pdf-info">
+                            <span class="pdf-title">Physical Screening Test Guide</span>
+                            <span class="pdf-meta">Criteria & Tips • 8 MB</span>
+                        </div>
+                        <div class="share-btn"><i class="fas fa-share-alt"></i></div>
+                    </a>
+                </div>
+            </div>
+
+            <div id="community-view" class="view-section">
+                <div class="subjects-grid">
+                    <div class="telegram-card">
+                        <i class="fab fa-telegram-plane tele-icon"></i>
+                        <div class="tele-title">Official Channel</div>
+                        <p class="tele-desc">Join our official channel for daily Punjab Police updates, poll quizzes, and important notifications.</p>
+                        <a href="https://t.me/your_official_channel" target="_blank" class="join-btn">
+                            <i class="fas fa-plus"></i> Join Now
+                        </a>
+                    </div>
+                    <div class="telegram-card">
+                        <i class="fab fa-telegram tele-icon"></i>
+                        <div class="tele-title">Discussion Group</div>
+                        <p class="tele-desc">Connect with other aspirants, clear your doubts, and participate in group studies.</p>
+                        <a href="https://t.me/your_discussion_group" target="_blank" class="join-btn">
+                            <i class="fas fa-comments"></i> Join Discussion
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chapters-view" class="chapters-view">
+                <div class="subject-header">
+                    <button id="back-to-dashboard" class="back-button">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </button>
+                    <h2 id="chapters-title">Year Name</h2>
+                    <div style="width: 80px;"></div>
+                </div>
+                <div id="chapters-grid"></div>
+            </div>
+
+    </div>
+
+    <div id="toast"></div>
+
+    <script>
+        // --- VARIABLES ---
+        const quizView = document.getElementById('quiz-view');
+        const infoView = document.getElementById('info-view');
+        const communityView = document.getElementById('community-view');
+        const chaptersView = document.getElementById('chapters-view');
+        const header = document.getElementById('main-header');
+        const navTabs = document.querySelector('.nav-tabs');
+        
+        const btnQuiz = document.getElementById('btn-quiz');
+        const btnInfo = document.getElementById('btn-info');
+        const btnCommunity = document.getElementById('btn-community');
+        
+        const subjects = document.querySelectorAll('.subject');
+        
+        const loginOverlay = document.getElementById('login-overlay');
+        const mainApp = document.getElementById('main-app');
+        const loginStatus = document.getElementById('loginStatus');
+
+        // **********************************************************
+        // PASTE YOUR DEPLOYED GOOGLE SCRIPT WEB APP URL HERE
+        // **********************************************************
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxqk_QvsgBLbtaiAUuErRD_kfHZnzKjMqSrmqp6BmWBP_UrQEYcrmKgzPgW_F_wKJIR/exec'; 
+
+        // Typewriting effect function (Generic Login Instruction)
+        const typeText = "Please enter your valid ID and Password";
+        let typeIndex = 0;
+        function typeEffect() {
+            if (typeIndex < typeText.length) {
+                document.getElementById("typewriter").innerHTML += typeText.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeEffect, 50);
+            }
+        }
+
+        // Auto-fill Saved Credentials from Dashboard LocalStorage
+        document.addEventListener("DOMContentLoaded", function() {
+            typeEffect(); // Start typewriter effect
+
+            // using the SAME keys as the main dashboard
+            const savedId = localStorage.getItem("pyq_userid");
+            const savedPass = localStorage.getItem("pyq_password");
+            
+            if (savedId && savedPass) {
+                document.getElementById('userId').value = savedId;
+                document.getElementById('userPass').value = savedPass;
+                document.getElementById('removeCredentialsBtn').style.display = 'inline-block';
+                handleLogin(); 
+            }
+        });
+
+        async function handleLogin() {
+            const id = document.getElementById('userId').value.trim();
+            const pass = document.getElementById('userPass').value.trim();
+            
+            loginStatus.textContent = "Verifying access...";
+            loginStatus.style.color = "blue";
+
+            if(!id || !pass) {
+                loginStatus.textContent = "Please fill in both fields.";
+                loginStatus.style.color = "red";
+                return;
+            }
+
+            // Connect to Google Sheet via secure POST
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ 
+                        id: id, 
+                        password: pass,
+                        requested_course: "Punjab Police" // YEH BATAYEGA KI PUNJAB POLICE KA ACCESS CHAHIYE
+                    })
+                });
+                
+                const result = await response.json();
+
+                if(result.success) {
+                    saveCredentials(id, pass);
+                    loginSuccess();
+                } else {
+                    // This triggers if ID/Pass is wrong OR if they don't have "Punjab Police" in their row
+                    loginStatus.innerHTML = result.message;
+                    loginStatus.style.color = "red";
+                    
+                    // Clear memory so they don't get stuck in an endless loop
+                    localStorage.removeItem("pyq_userid");
+                    localStorage.removeItem("pyq_password");
+                    document.getElementById('removeCredentialsBtn').style.display = 'none';
+                }
+            } catch (error) {
+                loginStatus.textContent = "Connection Error. Check URL or network.";
+                console.error("Login Error:", error);
+            }
+        }
+
+        // Helper to save credentials locally
+        function saveCredentials(id, pass) {
+            localStorage.setItem("pyq_userid", id);
+            localStorage.setItem("pyq_password", pass);
+            document.getElementById('removeCredentialsBtn').style.display = 'inline-block';
+        }
+
+        // Function called ONLY by the "Remove Login Credentials" button
+        function removeCredentialsBtn() {
+            localStorage.removeItem("pyq_userid");
+            localStorage.removeItem("pyq_password");
+            document.getElementById('userId').value = '';
+            document.getElementById('userPass').value = '';
+            
+            document.getElementById('removeCredentialsBtn').style.display = 'none';
+            loginStatus.textContent = "Saved credentials removed.";
+            loginStatus.style.color = "green";
+            setTimeout(() => { loginStatus.textContent = ""; }, 2500);
+        }
+
+        function loginSuccess() {
+            loginOverlay.style.opacity = '0';
+            setTimeout(() => {
+                loginOverlay.style.display = 'none';
+                mainApp.style.display = 'block';
+                loginStatus.textContent = ''; // Clear status for next time
+            }, 500);
+        }
+
+        function handleLogout() {
+            // Logs out from current session but doesn't wipe local storage
+            document.getElementById('main-app').style.display = 'none';
+            document.getElementById('login-overlay').style.display = 'flex';
+            document.getElementById('login-overlay').style.opacity = '1';
+            
+            document.getElementById('loginStatus').textContent = '';
+            
+            switchTab('quiz');
+            document.getElementById('chapters-view').style.display = 'none';
+            document.querySelector('.nav-tabs').style.display = 'flex';
+            document.getElementById('main-header').style.display = 'block';
+        }
+
+        // --- NAVIGATION LOGIC ---
+        function switchTab(tabName) {
+            quizView.classList.remove('active');
+            infoView.classList.remove('active');
+            communityView.classList.remove('active');
+            chaptersView.style.display = 'none'; 
+
+            btnQuiz.classList.remove('active');
+            btnInfo.classList.remove('active');
+            btnCommunity.classList.remove('active');
+
+            header.style.display = 'block';
+            navTabs.style.display = 'flex';
+
+            if(tabName === 'quiz') {
+                quizView.classList.add('active');
+                btnQuiz.classList.add('active');
+            } else if (tabName === 'info') {
+                infoView.classList.add('active');
+                btnInfo.classList.add('active');
+            } else if (tabName === 'community') {
+                communityView.classList.add('active');
+                btnCommunity.classList.add('active');
+            }
+        }
+
+        subjects.forEach(subject => {
+            subject.addEventListener('click', function() {
+                const subjectName = this.querySelector('.subject-name').textContent;
+                const topics = this.querySelector('.topics').innerHTML;
+                
+                document.getElementById('chapters-title').textContent = subjectName;
+                document.getElementById('chapters-grid').innerHTML = topics;
+                
+                quizView.classList.remove('active');
+                infoView.classList.remove('active');
+                communityView.classList.remove('active');
+                navTabs.style.display = 'none'; 
+                
+                chaptersView.style.display = 'block';
+                window.scrollTo(0, 0);
+            });
+        });
+
+        document.getElementById('back-to-dashboard').addEventListener('click', function() {
+            chaptersView.style.display = 'none';
+            switchTab('quiz'); 
+        });
+
+        // --- SEARCH LOGIC ---
+        function filterPDFs() {
+            const input = document.getElementById('pdfSearch');
+            const filter = input.value.toUpperCase();
+            const grid = document.getElementById('pdfGrid');
+            const cards = grid.getElementsByClassName('pdf-card');
+
+            for (let i = 0; i < cards.length; i++) {
+                let title = cards[i].querySelector(".pdf-title");
+                let txtValue = title.textContent || title.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    cards[i].style.display = "";
+                } else {
+                    cards[i].style.display = "none";
+                }
+            }
+        }
+
+        // --- TOAST LOGIC ---
+        function showToast(message) {
+            var x = document.getElementById("toast");
+            x.textContent = message;
+            x.className = "show";
+            setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+        }
+
+        // --- CLICK INTERCEPTION ---
+        document.getElementById('chapters-grid').addEventListener('click', function(e) {
+            const link = e.target.closest('.topic-link');
+            if (link) {
+                e.preventDefault(); 
+
+                // 1. Handle Locked Chapters
+                if(link.classList.contains('locked')) {
+                    showToast("Quiz Will Upload soon 🚀");
+                    return;
+                }
+
+                // 2. Handle Unlocked Chapters
+                const href = link.getAttribute('href');
+                if (!href || href === '#' || href === '' || href.trim() === '') {
+                    showToast("Quiz Will Upload soon 🚀"); 
+                } else {
+                    window.open(href, '_blank');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
